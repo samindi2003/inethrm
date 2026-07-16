@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inethrm-homepage
+  namespace: inethrm
+  labels:
+    app: inethrm-homepage
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: inethrm-homepage
+  template:
+    metadata:
+      labels:
+        app: inethrm-homepage
+    spec:
+      imagePullSecrets:
+      - name: ghcr-pull-secret
+      containers:
+      - name: inethrm-homepage
+        image: ghcr.io/nglsarath/inethrm:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inethrm-homepage-service
+  namespace: inethrm
+spec:
+  selector:
+    app: inethrm-homepage
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: inethrm-homepage-ingress
+  namespace: inethrm
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  rules:
+  - host: hrm.sripages.lk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: inethrm-homepage-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - hrm.sripages.lk
+    secretName: hrm-sripages-tls
