@@ -8,7 +8,7 @@ pipeline {
         IMAGE_TAG       = 'latest'
         
         // Credentials ID configured in Jenkins Credentials manager
-        GHCR_CREDS    = 'ghcr-nglsarath' 
+        GHCR_CREDS_ID   = 'ghcr-credentials' 
         //GHCR_CREDS_ID   = 'ghcr-credentials'
     }
 
