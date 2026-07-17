@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node / dependencies (just in case)
+node_modules/
+package-lock.json
+package.json
+
+# IDE / Editor configuration
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws

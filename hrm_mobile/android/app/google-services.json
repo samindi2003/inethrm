@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1088294582682",
+    "project_id": "inet-hrm",
+    "storage_bucket": "inet-hrm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088294582682:android:ecc08db59017cd056ea223",
+        "android_client_info": {
+          "package_name": "com.example.hrm_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXEyMuUJuxE7edAU2ceV0d9CJKONiyM6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
