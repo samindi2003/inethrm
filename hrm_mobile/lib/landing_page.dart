@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart'; 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'tasks_board_page.dart';
 
@@ -1287,6 +1287,52 @@ class _PortalMockupState extends State<PortalMockup> {
             ],
           ),
           const SizedBox(height: 24),
+          // Welcome Card
+Container(
+  width: double.infinity,
+  padding: const EdgeInsets.all(18),
+  decoration: BoxDecoration(
+    gradient: LinearGradient(
+      colors: [
+        primaryColor.withOpacity(0.15),
+        accentColor.withOpacity(0.15),
+      ],
+    ),
+    borderRadius: BorderRadius.circular(10),
+    border: Border.all(color: borderColor),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Welcome 👋",
+        style: GoogleFonts.outfit(
+          color: textMuted,
+          fontSize: 14,
+        ),
+      ),
+      const SizedBox(height: 4),
+      Text(
+        _userName,
+        style: GoogleFonts.outfit(
+          color: textMain,
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        "Have a productive day!",
+        style: GoogleFonts.outfit(
+          color: textMuted,
+          fontSize: 13,
+        ),
+      ),
+    ],
+  ),
+),
+
+const SizedBox(height: 20),
 
           // Stats Grid
           Row(
