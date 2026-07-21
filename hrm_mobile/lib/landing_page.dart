@@ -632,16 +632,15 @@ class PortalMockup extends StatefulWidget {
 
 class _PortalMockupState extends State<PortalMockup> {
   bool _isLoggedIn = false;
-  String _todayClockIn = "--:--";
-String _todayClockOut = "Not marked";
-String _attendanceStatus = "Absent";
   bool _isRegistering = false;
   bool _showHistory = false;
   bool _showLeaves = false;
   bool _showTasks = false;
   bool _isApplyingLeave = true;
   bool _isLoading = false;
+  bool _isAttendanceLoading = false;
   String _errorMessage = '';
+
   Stream<QuerySnapshot>? _historyStream;
   Stream<QuerySnapshot>? _leavesStream;
   Stream<QuerySnapshot>? _tasksStream;
@@ -653,8 +652,12 @@ String _attendanceStatus = "Absent";
   final TextEditingController _leaveReasonController = TextEditingController();
 
   // Controllers
-  final TextEditingController _emailController = TextEditingController(text: "junior.developer@inethrm.com");
-  final TextEditingController _passwordController = TextEditingController(text: "password123");
+  final TextEditingController _emailController = TextEditingController(
+    text: "junior.developer@inethrm.com",
+  );
+  final TextEditingController _passwordController = TextEditingController(
+    text: "password123",
+  );
   final TextEditingController _nameController = TextEditingController();
 
   // User details fetched from Firestore
@@ -663,15 +666,18 @@ String _attendanceStatus = "Absent";
   int _leavesLeft = 14;
   double _attendanceRate = 98.5;
 
-  // Timer Variables
+  // Timer and today's attendance
   Timer? _timer;
-  int _seconds = 28800; // 8 hours
-  bool _isClockedIn = true;
+  int _seconds = 0;
+  bool _isClockedIn = false;
+  String _todayAttendanceStatus = "Absent";
+  String _todayClockIn = "--:--";
+  String _todayClockOut = "Not marked";
 
   @override
   void initState() {
     super.initState();
-    // Check if user is already logged in
+
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       _loadUserProfile(user.uid);
@@ -679,6 +685,8 @@ String _attendanceStatus = "Absent";
   }
 
   Future<void> _loadUserProfile(String uid) async {
+    if (!mounted) return;
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';
@@ -696,33 +704,46 @@ String _attendanceStatus = "Absent";
           .where('userId', isEqualTo: uid)
           .snapshots();
     });
+
     try {
       await _seedTasksIfNeeded(uid);
-      final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .get();
+
+      if (!mounted) return;
+
       if (doc.exists) {
         final data = doc.data()!;
         setState(() {
           _userName = data['name'] ?? 'User';
           _userRole = data['role'] ?? 'Junior Developer';
           _leavesLeft = data['leavesLeft'] ?? 14;
-          _attendanceRate = (data['attendanceRate'] as num?)?.toDouble() ?? 98.5;
+          _attendanceRate =
+              (data['attendanceRate'] as num?)?.toDouble() ?? 98.5;
           _isLoggedIn = true;
         });
       } else {
         setState(() {
           _userName = 'User';
+          _userRole = 'Junior Developer';
           _isLoggedIn = true;
         });
       }
-      _startTimer();
+
+      await _loadTodayAttendance();
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = 'Failed to load profile: $e';
       });
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -783,7 +804,7 @@ String _attendanceStatus = "Absent";
         _attendanceRate = 100.0;
         _isLoggedIn = true;
       });
-      _startTimer();
+      await _loadTodayAttendance();
     } on FirebaseAuthException catch (e) {
       debugPrint("FirebaseAuthException in Register: [${e.code}] ${e.message}");
       setState(() {
@@ -837,57 +858,74 @@ String _attendanceStatus = "Absent";
     }
   }
 
-    Future<void> _handleLogout() async {
-      setState(() {
-        _isLoading = true;
-      });
-      try {
-        await FirebaseAuth.instance.signOut();
-        _stopTimer();
-        setState(() {
-          _isLoggedIn = false;
-          _showHistory = false;
-          _showLeaves = false;
-          _showTasks = false;
-          _isApplyingLeave = true;
-          _historyStream = null;
-          _leavesStream = null;
-          _tasksStream = null;
-          _startDate = null;
-          _endDate = null;
-          _leaveReasonController.clear();
-          _nameController.clear();
-          _errorMessage = '';
-        });
-      } catch (e) {
-        setState(() {
-          _errorMessage = 'Failed to log out: $e';
-        });
-      } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
+  Future<void> _handleLogout() async {
+    setState(() {
+      _isLoading = true;
+    });
 
-  Future<void> _logAttendance(String action) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      try {
-        await FirebaseFirestore.instance.collection('attendance_logs').add({
-          'userId': user.uid,
-          'timestamp': FieldValue.serverTimestamp(),
-          'action': action,
+    try {
+      await FirebaseAuth.instance.signOut();
+      _stopTimer();
+
+      if (!mounted) return;
+      setState(() {
+        _isLoggedIn = false;
+        _showHistory = false;
+        _showLeaves = false;
+        _showTasks = false;
+        _isApplyingLeave = true;
+        _historyStream = null;
+        _leavesStream = null;
+        _tasksStream = null;
+        _startDate = null;
+        _endDate = null;
+        _leaveReasonController.clear();
+        _nameController.clear();
+        _errorMessage = '';
+        _todayAttendanceStatus = "Absent";
+        _todayClockIn = "--:--";
+        _todayClockOut = "Not marked";
+        _isClockedIn = false;
+        _isAttendanceLoading = false;
+        _seconds = 0;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = 'Failed to log out: $e';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
         });
-      } catch (e) {
-        debugPrint("Failed to log attendance: $e");
       }
     }
   }
 
+  Future<void> _logAttendance(String action) async {
+  final user = FirebaseAuth.instance.currentUser;
+
+  if (user == null) {
+    throw Exception('No logged-in user found');
+  }
+
+  await FirebaseFirestore.instance
+      .collection('attendance_logs')
+      .add({
+    'userId': user.uid,
+    'timestamp': Timestamp.now(),
+    'action': action,
+  });
+}
+
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted || !_isClockedIn) {
+        timer.cancel();
+        return;
+      }
       setState(() {
         _seconds++;
       });
@@ -898,25 +936,234 @@ String _attendanceStatus = "Absent";
     _timer?.cancel();
     _timer = null;
   }
+  String _formatCurrentTime() {
+    return _formatDateTime(DateTime.now());
+  }
 
-  void _toggleClock() {
+
+Future<void> _loadTodayAttendance() async {
+  final user = FirebaseAuth.instance.currentUser;
+
+  if (user == null) {
+    return;
+  }
+
+  if (mounted) {
     setState(() {
-      if (_isClockedIn) {
-       _stopTimer();
-       _isClockedIn =false;
-       _todayClockOut =_formatTimeOnly(DateTime.now());
-       _logAttendance('clock_out');
-
-
-
-      } else {
-        _startTimer();
-        _isClockedIn = true;
-        _todayClockIn = _formatTimeOnly(DateTime.now());
-        _attendanceStatus = "Present"; 
-        _logAttendance('clock_in');
-      }
+      _isAttendanceLoading = true;
+      _errorMessage = '';
     });
+  }
+
+  try {
+    // Load all attendance records belonging to this user.
+    // We filter today's records in Flutter to avoid a Firestore index error.
+    final snapshot = await FirebaseFirestore.instance
+        .collection('attendance_logs')
+        .where('userId', isEqualTo: user.uid)
+        .get();
+
+    final now = DateTime.now();
+
+    final startOfToday = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    );
+
+    final endOfToday = startOfToday.add(
+      const Duration(days: 1),
+    );
+
+    DateTime? firstClockIn;
+    DateTime? lastClockOut;
+
+    for (final document in snapshot.docs) {
+      final data = document.data();
+
+      final action = data['action'];
+      final timestamp = data['timestamp'];
+
+      if (timestamp is! Timestamp) {
+        continue;
+      }
+
+      final attendanceTime = timestamp.toDate().toLocal();
+
+      final isToday =
+          !attendanceTime.isBefore(startOfToday) &&
+          attendanceTime.isBefore(endOfToday);
+
+      if (!isToday) {
+        continue;
+      }
+
+      if (action == 'clock_in') {
+        if (firstClockIn == null ||
+            attendanceTime.isBefore(firstClockIn)) {
+          firstClockIn = attendanceTime;
+        }
+      }
+
+      if (action == 'clock_out') {
+        if (lastClockOut == null ||
+            attendanceTime.isAfter(lastClockOut)) {
+          lastClockOut = attendanceTime;
+        }
+      }
+    }
+
+    if (!mounted) {
+      return;
+    }
+
+    if (firstClockIn == null) {
+      _stopTimer();
+
+      setState(() {
+        _todayAttendanceStatus = "Absent";
+        _todayClockIn = "--:--";
+        _todayClockOut = "Not marked";
+        _isClockedIn = false;
+        _seconds = 0;
+      });
+
+      debugPrint("No attendance records found for today.");
+      return;
+    }
+
+    if (lastClockOut == null) {
+      final workedSeconds = DateTime.now()
+          .difference(firstClockIn)
+          .inSeconds;
+
+      setState(() {
+        _todayAttendanceStatus = "Present";
+        _todayClockIn = _formatDateTime(firstClockIn!);
+        _todayClockOut = "Not marked";
+        _isClockedIn = true;
+        _seconds = workedSeconds < 0 ? 0 : workedSeconds;
+      });
+
+      _startTimer();
+
+      debugPrint(
+        "Clock-in restored: $_todayClockIn",
+      );
+
+      return;
+    }
+
+    final workedSeconds = lastClockOut
+        .difference(firstClockIn)
+        .inSeconds;
+
+    _stopTimer();
+
+    setState(() {
+      _todayAttendanceStatus = "Completed";
+      _todayClockIn = _formatDateTime(firstClockIn!);
+      _todayClockOut = _formatDateTime(lastClockOut!);
+      _isClockedIn = false;
+      _seconds = workedSeconds < 0 ? 0 : workedSeconds;
+    });
+
+    debugPrint(
+      "Attendance restored: "
+      "$_todayClockIn - $_todayClockOut",
+    );
+  } catch (error) {
+    debugPrint(
+      "Today's attendance load error: $error",
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _errorMessage =
+          "Could not load today's attendance: $error";
+    });
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isAttendanceLoading = false;
+      });
+    }
+  }
+}
+Future<void> _toggleClock() async {
+  if (_isAttendanceLoading || _isLoading) {
+    return;
+  }
+
+  setState(() {
+    _isAttendanceLoading = true;
+    _errorMessage = '';
+  });
+
+  try {
+    if (!_isClockedIn) {
+      await _logAttendance('clock_in');
+
+      if (!mounted) return;
+
+      setState(() {
+        _isClockedIn = true;
+        _todayAttendanceStatus = "Present";
+        _todayClockIn = _formatCurrentTime();
+        _todayClockOut = "Not marked";
+        _seconds = 0;
+      });
+
+      _startTimer();
+    } else {
+      await _logAttendance('clock_out');
+
+      if (!mounted) return;
+
+      setState(() {
+        _isClockedIn = false;
+        _todayAttendanceStatus = "Completed";
+        _todayClockOut = _formatCurrentTime();
+      });
+
+      _stopTimer();
+    }
+
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    );
+
+    await _loadTodayAttendance();
+  } catch (error) {
+    debugPrint("Attendance update error: $error");
+
+    if (!mounted) return;
+
+    setState(() {
+      _errorMessage =
+          "Failed to update attendance. Please try again.";
+    });
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isAttendanceLoading = false;
+      });
+    }
+  }
+}
+  String _formatDateTime(DateTime dateTime) {
+    final localDateTime = dateTime.toLocal();
+    int hour = localDateTime.hour;
+    final minute = localDateTime.minute.toString().padLeft(2, '0');
+    final period = localDateTime.hour >= 12 ? 'PM' : 'AM';
+
+    if (hour > 12) hour -= 12;
+    if (hour == 0) hour = 12;
+
+    return '$hour:$minute $period';
   }
 
   String _formatTime(int totalSecs) {
@@ -1203,7 +1450,47 @@ String _attendanceStatus = "Absent";
       ],
     );
   }
-
+Widget _buildTodayAttendanceItem({
+  required IconData icon,
+  required String title,
+  required String value,
+}) {
+  return Container(
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: bgDark.withValues(alpha: 0.5),
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: borderColor),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          color: accentColor,
+          size: 20,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: GoogleFonts.outfit(
+            color: textMuted,
+            fontSize: 12,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: GoogleFonts.outfit(
+            color: textMain,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    ),
+  );
+}
   // State 2: Dashboard View
   Widget _buildDashboard() {
     return Padding(
@@ -1367,7 +1654,89 @@ Container(
     ],
   ),
 ),
+const SizedBox(height: 16),
 
+Container(
+  width: double.infinity,
+  padding: const EdgeInsets.all(20),
+  decoration: BoxDecoration(
+    color: bgCard,
+    borderRadius: BorderRadius.circular(14),
+    border: Border.all(color: borderColor),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          const Icon(
+            Icons.calendar_today_outlined,
+            color: accentColor,
+            size: 22,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            "Today's Attendance",
+            style: GoogleFonts.outfit(
+              color: textMain,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+
+      const SizedBox(height: 18),
+
+      Row(
+        children: [
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              color: _todayAttendanceStatus == "Absent"
+                  ? dangerColor
+                  : successColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            _todayAttendanceStatus,
+            style: GoogleFonts.outfit(
+              color: _todayAttendanceStatus == "Absent"
+                  ? dangerColor
+                  : successColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+
+      const SizedBox(height: 18),
+
+      Row(
+        children: [
+          Expanded(
+            child: _buildTodayAttendanceItem(
+              icon: Icons.login,
+              title: "Clock In",
+              value: _todayClockIn,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildTodayAttendanceItem(
+              icon: Icons.logout,
+              title: "Clock Out",
+              value: _todayClockOut,
+            ),
+          ),
+        ],
+      ),
+    ],
+  ),
+),
 const SizedBox(height: 20),
 
           // Stats Grid
@@ -1425,7 +1794,7 @@ const SizedBox(height: 20),
                 const SizedBox(height: 16),
                 MouseRegion(
                   child: GestureDetector(
-                    onTap: _toggleClock,
+                    onTap: _isAttendanceLoading ? null : _toggleClock,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       width: double.infinity,
