@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'employee_profile_page.dart';
 import 'tasks_board_page.dart';
 
 // Styling Colors matching index.html variables
@@ -533,7 +534,7 @@ class _HoverButtonState extends State<_HoverButton> {
 class _FeatureCard extends StatefulWidget {
   final String icon;
   final String title;
-  final String description;
+  final String description; 
 
   const _FeatureCard({
     required this.icon,
@@ -1258,41 +1259,67 @@ String _attendanceStatus = "Absent";
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: successColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      "Active Session",
-                      style: GoogleFonts.outfit(
-                        color: successColor,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: _isLoading ? null : _handleLogout,
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: dangerColor.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.logout,
-                        size: 16,
-                        color: dangerColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            Row(
+  children: [
+    Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: successColor.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        "Active Session",
+        style: GoogleFonts.outfit(
+          color: successColor,
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+
+    const SizedBox(width: 8),
+
+    GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const EmployeeProfilePage(),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: primaryColor.withValues(alpha: 0.15),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.person_outline,
+          size: 17,
+          color: accentColor,
+        ),
+      ),
+    ),
+
+    const SizedBox(width: 8),
+
+    GestureDetector(
+      onTap: _isLoading ? null : _handleLogout,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: dangerColor.withValues(alpha: 0.1),
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          Icons.logout,
+          color: dangerColor,
+        ),
+      ),
+    ),
+  ],
+), 
             ],
           ),
           const SizedBox(height: 24),
