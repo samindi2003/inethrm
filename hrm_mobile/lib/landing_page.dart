@@ -150,11 +150,14 @@ class _LandingPageState extends State<LandingPage> {
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   children: _buildFeatures()
-                                      .map((card) => Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 20.0),
-                                            child: card,
-                                          ))
+                                      .map(
+                                        (card) => Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 20.0,
+                                          ),
+                                          child: card,
+                                        ),
+                                      )
                                       .toList(),
                                 );
                               }
@@ -181,10 +184,7 @@ class _LandingPageState extends State<LandingPage> {
                     child: Text(
                       "© 2026 InetHRM. Built with Node.js, Express, React, PostgreSQL, and Kubernetes.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
-                        color: textMuted,
-                        fontSize: 14,
-                      ),
+                      style: GoogleFonts.outfit(color: textMuted, fontSize: 14),
                     ),
                   ),
                 ),
@@ -193,12 +193,7 @@ class _LandingPageState extends State<LandingPage> {
           ),
 
           // Sticky Sticky Navigation Bar
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: _buildNavbar(isDesktop),
-          ),
+          Positioned(top: 0, left: 0, right: 0, child: _buildNavbar(isDesktop)),
         ],
       ),
     );
@@ -261,7 +256,9 @@ class _LandingPageState extends State<LandingPage> {
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 3),
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: primaryColor,
                           borderRadius: BorderRadius.circular(6),
@@ -313,7 +310,9 @@ class _LandingPageState extends State<LandingPage> {
                           onPressed: () => _scrollTo(_demoKey),
                           isPrimary: true,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                         ),
                       ],
                     ),
@@ -330,8 +329,9 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildHeroContent(bool isDesktop) {
     final align = isDesktop ? TextAlign.left : TextAlign.center;
     return Column(
-      crossAxisAlignment:
-          isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: isDesktop
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
         ShaderMask(
           shaderCallback: (bounds) => const LinearGradient(
@@ -365,8 +365,9 @@ class _LandingPageState extends State<LandingPage> {
         ),
         const SizedBox(height: 32),
         Row(
-          mainAxisAlignment:
-              isDesktop ? MainAxisAlignment.start : MainAxisAlignment.center,
+          mainAxisAlignment: isDesktop
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.center,
           children: [
             _HoverButton(
               text: "Launch Portal Demo",
@@ -473,8 +474,10 @@ class _HoverButtonState extends State<_HoverButton> {
 
   @override
   Widget build(BuildContext context) {
-    final defaultPadding =
-        const EdgeInsets.symmetric(horizontal: 24, vertical: 14);
+    final defaultPadding = const EdgeInsets.symmetric(
+      horizontal: 24,
+      vertical: 14,
+    );
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -487,9 +490,7 @@ class _HoverButtonState extends State<_HoverButton> {
           padding: widget.padding ?? defaultPadding,
           decoration: BoxDecoration(
             gradient: widget.isPrimary
-                ? const LinearGradient(
-                    colors: [primaryColor, primaryHover],
-                  )
+                ? const LinearGradient(colors: [primaryColor, primaryHover])
                 : null,
             color: widget.isPrimary
                 ? null
@@ -504,17 +505,17 @@ class _HoverButtonState extends State<_HoverButton> {
                       color: primaryColor.withValues(alpha: 0.6),
                       blurRadius: 20,
                       offset: const Offset(0, 6),
-                    )
+                    ),
                   ]
                 : (widget.isPrimary
-                    ? [
-                        BoxShadow(
-                          color: primaryColor.withValues(alpha: 0.4),
-                          blurRadius: 14,
-                          offset: const Offset(0, 4),
-                        )
-                      ]
-                    : []),
+                      ? [
+                          BoxShadow(
+                            color: primaryColor.withValues(alpha: 0.4),
+                            blurRadius: 14,
+                            offset: const Offset(0, 4),
+                          ),
+                        ]
+                      : []),
           ),
           child: Text(
             widget.text,
@@ -534,7 +535,7 @@ class _HoverButtonState extends State<_HoverButton> {
 class _FeatureCard extends StatefulWidget {
   final String icon;
   final String title;
-  final String description; 
+  final String description;
 
   const _FeatureCard({
     required this.icon,
@@ -556,8 +557,7 @@ class _FeatureCardState extends State<_FeatureCard> {
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        transform:
-            Matrix4.translationValues(0, _isHovered ? -5 : 0, 0),
+        transform: Matrix4.translationValues(0, _isHovered ? -5 : 0, 0),
         padding: const EdgeInsets.all(24.0),
         decoration: BoxDecoration(
           color: bgCard,
@@ -571,7 +571,7 @@ class _FeatureCardState extends State<_FeatureCard> {
               color: accentColor.withValues(alpha: _isHovered ? 0.1 : 0),
               blurRadius: 25,
               offset: const Offset(0, 10),
-            )
+            ),
           ],
         ),
         child: Column(
@@ -591,10 +591,7 @@ class _FeatureCardState extends State<_FeatureCard> {
                 ),
               ),
               child: Center(
-                child: Text(
-                  widget.icon,
-                  style: const TextStyle(fontSize: 22),
-                ),
+                child: Text(widget.icon, style: const TextStyle(fontSize: 22)),
               ),
             ),
             const SizedBox(height: 20),
@@ -639,11 +636,49 @@ class _PortalMockupState extends State<PortalMockup> {
   bool _isApplyingLeave = true;
   bool _isLoading = false;
   bool _isAttendanceLoading = false;
+
   String _errorMessage = '';
 
   Stream<QuerySnapshot>? _historyStream;
   Stream<QuerySnapshot>? _leavesStream;
   Stream<QuerySnapshot>? _tasksStream;
+
+  Future<void> _loadLeaveSummary(String uid) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('leave_requests')
+          .where('userId', isEqualTo: uid)
+          .get();
+
+      int pending = 0;
+      int approved = 0;
+      int rejected = 0;
+
+      for (final document in snapshot.docs) {
+        final data = document.data();
+
+        final status = (data['status'] ?? 'pending').toString().toLowerCase();
+
+        if (status == 'approved') {
+          approved++;
+        } else if (status == 'rejected') {
+          rejected++;
+        } else {
+          pending++;
+        }
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _pendingLeaves = pending;
+        _approvedLeaves = approved;
+        _rejectedLeaves = rejected;
+      });
+    } catch (error) {
+      debugPrint('Leave summary error: $error');
+    }
+  }
 
   // Leave Form Fields
   String _selectedLeaveType = 'Annual';
@@ -664,6 +699,9 @@ class _PortalMockupState extends State<PortalMockup> {
   String _userName = 'Junior Developer';
   String _userRole = 'Engineering Dept.';
   int _leavesLeft = 14;
+  int _pendingLeaves = 0;
+  int _approvedLeaves = 0;
+  int _rejectedLeaves = 0;
   double _attendanceRate = 98.5;
 
   // Timer and today's attendance
@@ -733,6 +771,7 @@ class _PortalMockupState extends State<PortalMockup> {
       }
 
       await _loadTodayAttendance();
+      await _loadLeaveSummary(uid);
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -763,10 +802,11 @@ class _PortalMockupState extends State<PortalMockup> {
     });
 
     try {
-      final credentials = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+      final credentials = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
 
       final uid = credentials.user!.uid;
 
@@ -836,10 +876,11 @@ class _PortalMockupState extends State<PortalMockup> {
     });
 
     try {
-      final credentials = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+      final credentials = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
+          );
 
       await _loadUserProfile(credentials.user!.uid);
     } on FirebaseAuthException catch (e) {
@@ -904,20 +945,18 @@ class _PortalMockupState extends State<PortalMockup> {
   }
 
   Future<void> _logAttendance(String action) async {
-  final user = FirebaseAuth.instance.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
 
-  if (user == null) {
-    throw Exception('No logged-in user found');
+    if (user == null) {
+      throw Exception('No logged-in user found');
+    }
+
+    await FirebaseFirestore.instance.collection('attendance_logs').add({
+      'userId': user.uid,
+      'timestamp': Timestamp.now(),
+      'action': action,
+    });
   }
-
-  await FirebaseFirestore.instance
-      .collection('attendance_logs')
-      .add({
-    'userId': user.uid,
-    'timestamp': Timestamp.now(),
-    'action': action,
-  });
-}
 
   void _startTimer() {
     _timer?.cancel();
@@ -936,224 +975,206 @@ class _PortalMockupState extends State<PortalMockup> {
     _timer?.cancel();
     _timer = null;
   }
+
   String _formatCurrentTime() {
     return _formatDateTime(DateTime.now());
   }
 
+  Future<void> _loadTodayAttendance() async {
+    final user = FirebaseAuth.instance.currentUser;
 
-Future<void> _loadTodayAttendance() async {
-  final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    }
 
-  if (user == null) {
-    return;
+    if (mounted) {
+      setState(() {
+        _isAttendanceLoading = true;
+        _errorMessage = '';
+      });
+    }
+
+    try {
+      // Load all attendance records belonging to this user.
+      // We filter today's records in Flutter to avoid a Firestore index error.
+      final snapshot = await FirebaseFirestore.instance
+          .collection('attendance_logs')
+          .where('userId', isEqualTo: user.uid)
+          .get();
+
+      final now = DateTime.now();
+
+      final startOfToday = DateTime(now.year, now.month, now.day);
+
+      final endOfToday = startOfToday.add(const Duration(days: 1));
+
+      DateTime? firstClockIn;
+      DateTime? lastClockOut;
+
+      for (final document in snapshot.docs) {
+        final data = document.data();
+
+        final action = data['action'];
+        final timestamp = data['timestamp'];
+
+        if (timestamp is! Timestamp) {
+          continue;
+        }
+
+        final attendanceTime = timestamp.toDate().toLocal();
+
+        final isToday =
+            !attendanceTime.isBefore(startOfToday) &&
+            attendanceTime.isBefore(endOfToday);
+
+        if (!isToday) {
+          continue;
+        }
+
+        if (action == 'clock_in') {
+          if (firstClockIn == null || attendanceTime.isBefore(firstClockIn)) {
+            firstClockIn = attendanceTime;
+          }
+        }
+
+        if (action == 'clock_out') {
+          if (lastClockOut == null || attendanceTime.isAfter(lastClockOut)) {
+            lastClockOut = attendanceTime;
+          }
+        }
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      if (firstClockIn == null) {
+        _stopTimer();
+
+        setState(() {
+          _todayAttendanceStatus = "Absent";
+          _todayClockIn = "--:--";
+          _todayClockOut = "Not marked";
+          _isClockedIn = false;
+          _seconds = 0;
+        });
+
+        debugPrint("No attendance records found for today.");
+        return;
+      }
+
+      if (lastClockOut == null) {
+        final workedSeconds = DateTime.now().difference(firstClockIn).inSeconds;
+
+        setState(() {
+          _todayAttendanceStatus = "Present";
+          _todayClockIn = _formatDateTime(firstClockIn!);
+          _todayClockOut = "Not marked";
+          _isClockedIn = true;
+          _seconds = workedSeconds < 0 ? 0 : workedSeconds;
+        });
+
+        _startTimer();
+
+        debugPrint("Clock-in restored: $_todayClockIn");
+
+        return;
+      }
+
+      final workedSeconds = lastClockOut.difference(firstClockIn).inSeconds;
+
+      _stopTimer();
+
+      setState(() {
+        _todayAttendanceStatus = "Completed";
+        _todayClockIn = _formatDateTime(firstClockIn!);
+        _todayClockOut = _formatDateTime(lastClockOut!);
+        _isClockedIn = false;
+        _seconds = workedSeconds < 0 ? 0 : workedSeconds;
+      });
+
+      debugPrint(
+        "Attendance restored: "
+        "$_todayClockIn - $_todayClockOut",
+      );
+    } catch (error) {
+      debugPrint("Today's attendance load error: $error");
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _errorMessage = "Could not load today's attendance: $error";
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAttendanceLoading = false;
+        });
+      }
+    }
   }
 
-  if (mounted) {
+  Future<void> _toggleClock() async {
+    if (_isAttendanceLoading || _isLoading) {
+      return;
+    }
+
     setState(() {
       _isAttendanceLoading = true;
       _errorMessage = '';
     });
-  }
 
-  try {
-    // Load all attendance records belonging to this user.
-    // We filter today's records in Flutter to avoid a Firestore index error.
-    final snapshot = await FirebaseFirestore.instance
-        .collection('attendance_logs')
-        .where('userId', isEqualTo: user.uid)
-        .get();
+    try {
+      if (!_isClockedIn) {
+        await _logAttendance('clock_in');
 
-    final now = DateTime.now();
+        if (!mounted) return;
 
-    final startOfToday = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    );
+        setState(() {
+          _isClockedIn = true;
+          _todayAttendanceStatus = "Present";
+          _todayClockIn = _formatCurrentTime();
+          _todayClockOut = "Not marked";
+          _seconds = 0;
+        });
 
-    final endOfToday = startOfToday.add(
-      const Duration(days: 1),
-    );
+        _startTimer();
+      } else {
+        await _logAttendance('clock_out');
 
-    DateTime? firstClockIn;
-    DateTime? lastClockOut;
+        if (!mounted) return;
 
-    for (final document in snapshot.docs) {
-      final data = document.data();
+        setState(() {
+          _isClockedIn = false;
+          _todayAttendanceStatus = "Completed";
+          _todayClockOut = _formatCurrentTime();
+        });
 
-      final action = data['action'];
-      final timestamp = data['timestamp'];
-
-      if (timestamp is! Timestamp) {
-        continue;
+        _stopTimer();
       }
 
-      final attendanceTime = timestamp.toDate().toLocal();
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      final isToday =
-          !attendanceTime.isBefore(startOfToday) &&
-          attendanceTime.isBefore(endOfToday);
-
-      if (!isToday) {
-        continue;
-      }
-
-      if (action == 'clock_in') {
-        if (firstClockIn == null ||
-            attendanceTime.isBefore(firstClockIn)) {
-          firstClockIn = attendanceTime;
-        }
-      }
-
-      if (action == 'clock_out') {
-        if (lastClockOut == null ||
-            attendanceTime.isAfter(lastClockOut)) {
-          lastClockOut = attendanceTime;
-        }
-      }
-    }
-
-    if (!mounted) {
-      return;
-    }
-
-    if (firstClockIn == null) {
-      _stopTimer();
-
-      setState(() {
-        _todayAttendanceStatus = "Absent";
-        _todayClockIn = "--:--";
-        _todayClockOut = "Not marked";
-        _isClockedIn = false;
-        _seconds = 0;
-      });
-
-      debugPrint("No attendance records found for today.");
-      return;
-    }
-
-    if (lastClockOut == null) {
-      final workedSeconds = DateTime.now()
-          .difference(firstClockIn)
-          .inSeconds;
-
-      setState(() {
-        _todayAttendanceStatus = "Present";
-        _todayClockIn = _formatDateTime(firstClockIn!);
-        _todayClockOut = "Not marked";
-        _isClockedIn = true;
-        _seconds = workedSeconds < 0 ? 0 : workedSeconds;
-      });
-
-      _startTimer();
-
-      debugPrint(
-        "Clock-in restored: $_todayClockIn",
-      );
-
-      return;
-    }
-
-    final workedSeconds = lastClockOut
-        .difference(firstClockIn)
-        .inSeconds;
-
-    _stopTimer();
-
-    setState(() {
-      _todayAttendanceStatus = "Completed";
-      _todayClockIn = _formatDateTime(firstClockIn!);
-      _todayClockOut = _formatDateTime(lastClockOut!);
-      _isClockedIn = false;
-      _seconds = workedSeconds < 0 ? 0 : workedSeconds;
-    });
-
-    debugPrint(
-      "Attendance restored: "
-      "$_todayClockIn - $_todayClockOut",
-    );
-  } catch (error) {
-    debugPrint(
-      "Today's attendance load error: $error",
-    );
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _errorMessage =
-          "Could not load today's attendance: $error";
-    });
-  } finally {
-    if (mounted) {
-      setState(() {
-        _isAttendanceLoading = false;
-      });
-    }
-  }
-}
-Future<void> _toggleClock() async {
-  if (_isAttendanceLoading || _isLoading) {
-    return;
-  }
-
-  setState(() {
-    _isAttendanceLoading = true;
-    _errorMessage = '';
-  });
-
-  try {
-    if (!_isClockedIn) {
-      await _logAttendance('clock_in');
+      await _loadTodayAttendance();
+    } catch (error) {
+      debugPrint("Attendance update error: $error");
 
       if (!mounted) return;
 
       setState(() {
-        _isClockedIn = true;
-        _todayAttendanceStatus = "Present";
-        _todayClockIn = _formatCurrentTime();
-        _todayClockOut = "Not marked";
-        _seconds = 0;
+        _errorMessage = "Failed to update attendance. Please try again.";
       });
-
-      _startTimer();
-    } else {
-      await _logAttendance('clock_out');
-
-      if (!mounted) return;
-
-      setState(() {
-        _isClockedIn = false;
-        _todayAttendanceStatus = "Completed";
-        _todayClockOut = _formatCurrentTime();
-      });
-
-      _stopTimer();
-    }
-
-    await Future.delayed(
-      const Duration(milliseconds: 500),
-    );
-
-    await _loadTodayAttendance();
-  } catch (error) {
-    debugPrint("Attendance update error: $error");
-
-    if (!mounted) return;
-
-    setState(() {
-      _errorMessage =
-          "Failed to update attendance. Please try again.";
-    });
-  } finally {
-    if (mounted) {
-      setState(() {
-        _isAttendanceLoading = false;
-      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAttendanceLoading = false;
+        });
+      }
     }
   }
-}
+
   String _formatDateTime(DateTime dateTime) {
     final localDateTime = dateTime.toLocal();
     int hour = localDateTime.hour;
@@ -1204,7 +1225,7 @@ Future<void> _toggleClock() async {
             color: Colors.black45,
             blurRadius: 40,
             offset: Offset(0, 20),
-          )
+          ),
         ],
       ),
       child: ClipRRect(
@@ -1215,16 +1236,13 @@ Future<void> _toggleClock() async {
             Container(
               height: 3,
               decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [primaryColor, accentColor],
-                ),
+                gradient: LinearGradient(colors: [primaryColor, accentColor]),
               ),
             ),
 
             // Window Header
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1259,14 +1277,29 @@ Future<void> _toggleClock() async {
                 return FadeTransition(opacity: animation, child: child);
               },
               child: !_isLoggedIn
-                  ? KeyedSubtree(key: const ValueKey('login'), child: _buildLoginForm())
+                  ? KeyedSubtree(
+                      key: const ValueKey('login'),
+                      child: _buildLoginForm(),
+                    )
                   : _showLeaves
-                      ? KeyedSubtree(key: const ValueKey('leaves'), child: _buildLeaveManagement())
-                      : _showTasks
-                          ? KeyedSubtree(key: const ValueKey('tasks'), child: _buildTasksBoard())
-                          : _showHistory
-                              ? KeyedSubtree(key: const ValueKey('history'), child: _buildShiftHistory())
-                              : KeyedSubtree(key: const ValueKey('dashboard'), child: _buildDashboard()),
+                  ? KeyedSubtree(
+                      key: const ValueKey('leaves'),
+                      child: _buildLeaveManagement(),
+                    )
+                  : _showTasks
+                  ? KeyedSubtree(
+                      key: const ValueKey('tasks'),
+                      child: _buildTasksBoard(),
+                    )
+                  : _showHistory
+                  ? KeyedSubtree(
+                      key: const ValueKey('history'),
+                      child: _buildShiftHistory(),
+                    )
+                  : KeyedSubtree(
+                      key: const ValueKey('dashboard'),
+                      child: _buildDashboard(),
+                    ),
             ),
           ],
         ),
@@ -1278,10 +1311,7 @@ Future<void> _toggleClock() async {
     return Container(
       width: 10,
       height: 10,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-      ),
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
     );
   }
 
@@ -1305,10 +1335,7 @@ Future<void> _toggleClock() async {
             _isRegistering
                 ? "Create a new developer account to access the system."
                 : "Sign in using your developer credentials.",
-            style: GoogleFonts.outfit(
-              color: textMuted,
-              fontSize: 14,
-            ),
+            style: GoogleFonts.outfit(color: textMuted, fontSize: 14),
           ),
           const SizedBox(height: 20),
 
@@ -1359,7 +1386,7 @@ Future<void> _toggleClock() async {
                     color: primaryColor.withValues(alpha: 0.4),
                     blurRadius: 14,
                     offset: const Offset(0, 4),
-                  )
+                  ),
                 ],
               ),
               child: _isLoading
@@ -1372,7 +1399,9 @@ Future<void> _toggleClock() async {
                       ),
                     )
                   : Text(
-                      _isRegistering ? "Create Developer Account" : "Sign In as Developer",
+                      _isRegistering
+                          ? "Create Developer Account"
+                          : "Sign In as Developer",
                       style: GoogleFonts.outfit(
                         color: textMain,
                         fontWeight: FontWeight.w600,
@@ -1412,7 +1441,11 @@ Future<void> _toggleClock() async {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, {bool obscure = false}) {
+  Widget _buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool obscure = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1436,13 +1469,13 @@ Future<void> _toggleClock() async {
             controller: controller,
             obscureText: obscure,
             cursorColor: accentColor,
-            style: GoogleFonts.outfit(
-              color: textMain,
-              fontSize: 15,
-            ),
+            style: GoogleFonts.outfit(color: textMain, fontSize: 15),
             decoration: const InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               isDense: true,
             ),
           ),
@@ -1450,47 +1483,42 @@ Future<void> _toggleClock() async {
       ],
     );
   }
-Widget _buildTodayAttendanceItem({
-  required IconData icon,
-  required String title,
-  required String value,
-}) {
-  return Container(
-    padding: const EdgeInsets.all(14),
-    decoration: BoxDecoration(
-      color: bgDark.withValues(alpha: 0.5),
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: borderColor),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          icon,
-          color: accentColor,
-          size: 20,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: GoogleFonts.outfit(
-            color: textMuted,
-            fontSize: 12,
+
+  Widget _buildTodayAttendanceItem({
+    required IconData icon,
+    required String title,
+    required String value,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: bgDark.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: accentColor, size: 20),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: GoogleFonts.outfit(color: textMuted, fontSize: 12),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: GoogleFonts.outfit(
-            color: textMain,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: GoogleFonts.outfit(
+              color: textMain,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
+
   // State 2: Dashboard View
   Widget _buildDashboard() {
     return Padding(
@@ -1546,208 +1574,241 @@ Widget _buildTodayAttendanceItem({
                   ),
                 ],
               ),
-            Row(
-  children: [
-    Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: successColor.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        "Active Session",
-        style: GoogleFonts.outfit(
-          color: successColor,
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: successColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      "Active Session",
+                      style: GoogleFonts.outfit(
+                        color: successColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
 
-    const SizedBox(width: 8),
+                  const SizedBox(width: 8),
 
-    GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const EmployeeProfilePage(),
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: primaryColor.withValues(alpha: 0.15),
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.person_outline,
-          size: 17,
-          color: accentColor,
-        ),
-      ),
-    ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EmployeeProfilePage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: primaryColor.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.person_outline,
+                        size: 17,
+                        color: accentColor,
+                      ),
+                    ),
+                  ),
 
-    const SizedBox(width: 8),
+                  const SizedBox(width: 8),
 
-    GestureDetector(
-      onTap: _isLoading ? null : _handleLogout,
-      child: Container(
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: dangerColor.withValues(alpha: 0.1),
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.logout,
-          color: dangerColor,
-        ),
-      ),
-    ),
-  ],
-), 
+                  GestureDetector(
+                    onTap: _isLoading ? null : _handleLogout,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: dangerColor.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.logout, color: dangerColor),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: 24),
           // Welcome Card
-Container(
-  width: double.infinity,
-  padding: const EdgeInsets.all(18),
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      colors: [
-        primaryColor.withOpacity(0.15),
-        accentColor.withOpacity(0.15),
-      ],
-    ),
-    borderRadius: BorderRadius.circular(10),
-    border: Border.all(color: borderColor),
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        "Welcome 👋",
-        style: GoogleFonts.outfit(
-          color: textMuted,
-          fontSize: 14,
-        ),
-      ),
-      const SizedBox(height: 4),
-      Text(
-        _userName,
-        style: GoogleFonts.outfit(
-          color: textMain,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        "Have a productive day!",
-        style: GoogleFonts.outfit(
-          color: textMuted,
-          fontSize: 13,
-        ),
-      ),
-    ],
-  ),
-),
-const SizedBox(height: 16),
-
-Container(
-  width: double.infinity,
-  padding: const EdgeInsets.all(20),
-  decoration: BoxDecoration(
-    color: bgCard,
-    borderRadius: BorderRadius.circular(14),
-    border: Border.all(color: borderColor),
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          const Icon(
-            Icons.calendar_today_outlined,
-            color: accentColor,
-            size: 22,
-          ),
-          const SizedBox(width: 10),
-          Text(
-            "Today's Attendance",
-            style: GoogleFonts.outfit(
-              color: textMain,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-
-      const SizedBox(height: 18),
-
-      Row(
-        children: [
           Container(
-            width: 10,
-            height: 10,
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: _todayAttendanceStatus == "Absent"
-                  ? dangerColor
-                  : successColor,
-              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  primaryColor.withOpacity(0.15),
+                  accentColor.withOpacity(0.15),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Welcome 👋",
+                  style: GoogleFonts.outfit(color: textMuted, fontSize: 14),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _userName,
+                  style: GoogleFonts.outfit(
+                    color: textMain,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Have a productive day!",
+                  style: GoogleFonts.outfit(color: textMuted, fontSize: 13),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            _todayAttendanceStatus,
-            style: GoogleFonts.outfit(
-              color: _todayAttendanceStatus == "Absent"
-                  ? dangerColor
-                  : successColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+          const SizedBox(height: 16),
 
-      const SizedBox(height: 18),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: bgCard,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.calendar_today_outlined,
+                      color: accentColor,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "Today's Attendance",
+                      style: GoogleFonts.outfit(
+                        color: textMain,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
 
-      Row(
-        children: [
-          Expanded(
-            child: _buildTodayAttendanceItem(
-              icon: Icons.login,
-              title: "Clock In",
-              value: _todayClockIn,
+                const SizedBox(height: 18),
+
+                Row(
+                  children: [
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: _todayAttendanceStatus == "Absent"
+                            ? dangerColor
+                            : successColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _todayAttendanceStatus,
+                      style: GoogleFonts.outfit(
+                        color: _todayAttendanceStatus == "Absent"
+                            ? dangerColor
+                            : successColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 18),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTodayAttendanceItem(
+                        icon: Icons.login,
+                        title: "Clock In",
+                        value: _todayClockIn,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildTodayAttendanceItem(
+                        icon: Icons.logout,
+                        title: "Clock Out",
+                        value: _todayClockOut,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildTodayAttendanceItem(
-              icon: Icons.logout,
-              title: "Clock Out",
-              value: _todayClockOut,
-            ),
-          ),
-        ],
-      ),
-    ],
-  ),
-),
-const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Stats Grid
-          Row(
+          Column(
             children: [
-              Expanded(
-                child: _buildStatCard("Leaves Left", "$_leavesLeft Days"),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard("Leaves Left", "$_leavesLeft Days"),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildStatCard(
+                      "Attendance Rate",
+                      "$_attendanceRate%",
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildStatCard("Attendance Rate", "$_attendanceRate%"),
+
+              const SizedBox(height: 16),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard("Pending Leaves", "$_pendingLeaves"),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildStatCard(
+                      "Approved Leaves",
+                      "$_approvedLeaves",
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      "Rejected Leaves",
+                      "$_rejectedLeaves",
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  const Expanded(child: SizedBox()),
+                ],
               ),
             ],
           ),
@@ -1826,7 +1887,11 @@ const SizedBox(height: 20),
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton.icon(
-                      icon: const Icon(Icons.history, size: 15, color: accentColor),
+                      icon: const Icon(
+                        Icons.history,
+                        size: 15,
+                        color: accentColor,
+                      ),
                       label: Text(
                         "History",
                         style: GoogleFonts.outfit(
@@ -1843,7 +1908,11 @@ const SizedBox(height: 20),
                     ),
                     const SizedBox(width: 8),
                     TextButton.icon(
-                      icon: const Icon(Icons.work_off, size: 15, color: accentColor),
+                      icon: const Icon(
+                        Icons.work_off,
+                        size: 15,
+                        color: accentColor,
+                      ),
                       label: Text(
                         "Leaves",
                         style: GoogleFonts.outfit(
@@ -1860,7 +1929,11 @@ const SizedBox(height: 20),
                     ),
                     const SizedBox(width: 8),
                     TextButton.icon(
-                      icon: const Icon(Icons.assignment, size: 15, color: accentColor),
+                      icon: const Icon(
+                        Icons.assignment,
+                        size: 15,
+                        color: accentColor,
+                      ),
                       label: Text(
                         "Tasks",
                         style: GoogleFonts.outfit(
@@ -1999,7 +2072,9 @@ const SizedBox(height: 20),
           // Tab Body
           SizedBox(
             height: 280,
-            child: _isApplyingLeave ? _buildApplyLeaveForm() : _buildMyLeavesList(),
+            child: _isApplyingLeave
+                ? _buildApplyLeaveForm()
+                : _buildMyLeavesList(),
           ),
         ],
       ),
@@ -2014,7 +2089,9 @@ const SizedBox(height: 20),
         padding: const EdgeInsets.symmetric(vertical: 8),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: active ? primaryColor.withValues(alpha: 0.15) : Colors.transparent,
+          color: active
+              ? primaryColor.withValues(alpha: 0.15)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
             color: active ? primaryColor : borderColor,
@@ -2056,7 +2133,11 @@ const SizedBox(height: 20),
           // Leave Type Cards Row
           Text(
             "Leave Type",
-            style: GoogleFonts.outfit(color: textMuted, fontSize: 12, fontWeight: FontWeight.w500),
+            style: GoogleFonts.outfit(
+              color: textMuted,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 6),
           Row(
@@ -2086,7 +2167,9 @@ const SizedBox(height: 20),
                       type,
                       style: GoogleFonts.outfit(
                         color: textMain,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                         fontSize: 12,
                       ),
                     ),
@@ -2122,7 +2205,11 @@ const SizedBox(height: 20),
           // Reason TextField
           Text(
             "Reason",
-            style: GoogleFonts.outfit(color: textMuted, fontSize: 12, fontWeight: FontWeight.w500),
+            style: GoogleFonts.outfit(
+              color: textMuted,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 6),
           Container(
@@ -2139,8 +2226,14 @@ const SizedBox(height: 20),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: "Enter the reason for leave...",
-                hintStyle: GoogleFonts.outfit(color: textMuted.withValues(alpha: 0.5), fontSize: 13),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                hintStyle: GoogleFonts.outfit(
+                  color: textMuted.withValues(alpha: 0.5),
+                  fontSize: 13,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
               ),
             ),
           ),
@@ -2183,13 +2276,21 @@ const SizedBox(height: 20),
     );
   }
 
-  Widget _buildDatePickerTile(String label, DateTime? date, Function(DateTime) onSelected) {
+  Widget _buildDatePickerTile(
+    String label,
+    DateTime? date,
+    Function(DateTime) onSelected,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: GoogleFonts.outfit(color: textMuted, fontSize: 12, fontWeight: FontWeight.w500),
+          style: GoogleFonts.outfit(
+            color: textMuted,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         const SizedBox(height: 6),
         GestureDetector(
@@ -2229,7 +2330,9 @@ const SizedBox(height: 20),
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  date == null ? "Select Date" : "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+                  date == null
+                      ? "Select Date"
+                      : "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
                   style: GoogleFonts.outfit(
                     color: date == null ? textMuted : textMain,
                     fontSize: 13,
@@ -2284,10 +2387,7 @@ const SizedBox(height: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "🌴",
-                  style: TextStyle(fontSize: 32),
-                ),
+                const Text("🌴", style: TextStyle(fontSize: 32)),
                 const SizedBox(height: 12),
                 Text(
                   "No leave requests found",
@@ -2317,7 +2417,8 @@ const SizedBox(height: 20),
             if (start != null && end != null) {
               final sDate = start.toDate();
               final eDate = end.toDate();
-              rangeStr = "${sDate.month}/${sDate.day} - ${eDate.month}/${eDate.day}";
+              rangeStr =
+                  "${sDate.month}/${sDate.day} - ${eDate.month}/${eDate.day}";
             }
 
             // Determine badge color
@@ -2367,7 +2468,10 @@ const SizedBox(height: 20),
                     ],
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: badgeBg,
                       borderRadius: BorderRadius.circular(4),
@@ -2428,6 +2532,7 @@ const SizedBox(height: 20),
           'status': 'pending',
           'createdAt': FieldValue.serverTimestamp(),
         });
+        await _loadLeaveSummary(user.uid);
 
         // Reset fields
         setState(() {
@@ -2459,29 +2564,32 @@ const SizedBox(height: 20),
       if (snapshot.docs.isEmpty) {
         final batch = FirebaseFirestore.instance.batch();
         final tasksRef = FirebaseFirestore.instance.collection('tasks');
-        
+
         batch.set(tasksRef.doc(), {
           'userId': uid,
           'title': 'Deploy API to Kubernetes cluster',
-          'description': 'Deploy the node.js microservice API deployment and service to the local K8s cluster.',
+          'description':
+              'Deploy the node.js microservice API deployment and service to the local K8s cluster.',
           'status': 'todo',
           'priority': 'high',
           'createdAt': FieldValue.serverTimestamp(),
         });
-        
+
         batch.set(tasksRef.doc(), {
           'userId': uid,
           'title': 'Refactor Firestore Auth rules',
-          'description': 'Update firestore.rules to secure collections by checking request.auth.uid.',
+          'description':
+              'Update firestore.rules to secure collections by checking request.auth.uid.',
           'status': 'in_progress',
           'priority': 'medium',
           'createdAt': FieldValue.serverTimestamp(),
         });
-        
+
         batch.set(tasksRef.doc(), {
           'userId': uid,
           'title': 'Design modern dark theme layout',
-          'description': 'Create beautiful radial gradients and typography layout for the landing dashboard.',
+          'description':
+              'Create beautiful radial gradients and typography layout for the landing dashboard.',
           'status': 'done',
           'priority': 'low',
           'createdAt': FieldValue.serverTimestamp(),
@@ -2569,10 +2677,7 @@ const SizedBox(height: 20),
                   ),
                   Text(
                     "${docs.length} logs",
-                    style: GoogleFonts.outfit(
-                      color: textMuted,
-                      fontSize: 13,
-                    ),
+                    style: GoogleFonts.outfit(color: textMuted, fontSize: 13),
                   ),
                 ],
               ),
@@ -2586,10 +2691,7 @@ const SizedBox(height: 20),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              "⏰",
-                              style: TextStyle(fontSize: 32),
-                            ),
+                            const Text("⏰", style: TextStyle(fontSize: 32)),
                             const SizedBox(height: 12),
                             Text(
                               "No logs recorded yet",
@@ -2627,7 +2729,10 @@ const SizedBox(height: 20),
                             decoration: BoxDecoration(
                               color: bgDark,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: borderColor, width: 0.5),
+                              border: Border.all(
+                                color: borderColor,
+                                width: 0.5,
+                              ),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -2639,7 +2744,9 @@ const SizedBox(height: 20),
                                       height: 8,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: isClockIn ? successColor : dangerColor,
+                                        color: isClockIn
+                                            ? successColor
+                                            : dangerColor,
                                       ),
                                     ),
                                     const SizedBox(width: 12),
@@ -2699,10 +2806,25 @@ const SizedBox(height: 20),
       return "Today";
     }
     final yesterday = now.subtract(const Duration(days: 1));
-    if (dt.day == yesterday.day && dt.month == yesterday.month && dt.year == yesterday.year) {
+    if (dt.day == yesterday.day &&
+        dt.month == yesterday.month &&
+        dt.year == yesterday.year) {
       return "Yesterday";
     }
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return "${months[dt.month - 1]} ${dt.day}, ${dt.year}";
   }
 
@@ -2755,9 +2877,15 @@ const SizedBox(height: 20),
             stream: _tasksStream,
             builder: (context, snapshot) {
               final docs = snapshot.data?.docs ?? [];
-              final todoCount = docs.where((doc) => doc['status'] == 'todo').length;
-              final inProgressCount = docs.where((doc) => doc['status'] == 'in_progress').length;
-              final doneCount = docs.where((doc) => doc['status'] == 'done').length;
+              final todoCount = docs
+                  .where((doc) => doc['status'] == 'todo')
+                  .length;
+              final inProgressCount = docs
+                  .where((doc) => doc['status'] == 'in_progress')
+                  .length;
+              final doneCount = docs
+                  .where((doc) => doc['status'] == 'done')
+                  .length;
 
               return Container(
                 padding: const EdgeInsets.all(16),
@@ -2807,7 +2935,11 @@ const SizedBox(height: 20),
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildSummaryStat("To Do", todoCount, accentColor),
-                        _buildSummaryStat("In Progress", inProgressCount, warningColor),
+                        _buildSummaryStat(
+                          "In Progress",
+                          inProgressCount,
+                          warningColor,
+                        ),
                         _buildSummaryStat("Done", doneCount, successColor),
                       ],
                     ),
@@ -2840,7 +2972,8 @@ const SizedBox(height: 20),
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => TasksBoardPage(uid: user.uid),
+                                builder: (context) =>
+                                    TasksBoardPage(uid: user.uid),
                               ),
                             );
                           }
