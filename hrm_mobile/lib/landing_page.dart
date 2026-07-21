@@ -631,6 +631,9 @@ class PortalMockup extends StatefulWidget {
 
 class _PortalMockupState extends State<PortalMockup> {
   bool _isLoggedIn = false;
+  String _todayClockIn = "--:--";
+String _todayClockOut = "Not marked";
+String _attendanceStatus = "Absent";
   bool _isRegistering = false;
   bool _showHistory = false;
   bool _showLeaves = false;
@@ -898,12 +901,18 @@ class _PortalMockupState extends State<PortalMockup> {
   void _toggleClock() {
     setState(() {
       if (_isClockedIn) {
-        _stopTimer();
-        _isClockedIn = false;
-        _logAttendance('clock_out');
+       _stopTimer();
+       _isClockedIn =false;
+       _todayClockOut =_formatTimeOnly(DateTime.now());
+       _logAttendance('clock_out');
+
+
+
       } else {
         _startTimer();
         _isClockedIn = true;
+        _todayClockIn = _formatTimeOnly(DateTime.now());
+        _attendanceStatus = "Present"; 
         _logAttendance('clock_in');
       }
     });
