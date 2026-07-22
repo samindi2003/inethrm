@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'employee_profile_page.dart';
 import 'tasks_board_page.dart';
+import 'employee_directory_page.dart';
+import 'notifications_page.dart';
 
 // Styling Colors matching index.html variables
 const Color bgDark = Color(0xFF0F172A);
@@ -289,6 +291,13 @@ class _LandingPageState extends State<LandingPage> {
                           onTap: () => _scrollTo(_demoKey),
                         ),
                         const SizedBox(width: 30),
+                        IconButton(
+                          icon: const Icon(Icons.notifications, color: Colors.white),
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsPage()));
+                          },
+                        ),
+                        const SizedBox(width: 16),
                         _HoverButton(
                           text: "Portal Login",
                           onPressed: () => _scrollTo(_demoKey),
@@ -305,6 +314,13 @@ class _LandingPageState extends State<LandingPage> {
                           onTap: () => _scrollTo(_demoKey),
                         ),
                         const SizedBox(width: 15),
+                        IconButton(
+                          icon: const Icon(Icons.notifications, color: Colors.white),
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsPage()));
+                          },
+                        ),
+                        const SizedBox(width: 8),
                         _HoverButton(
                           text: "Login",
                           onPressed: () => _scrollTo(_demoKey),
@@ -373,6 +389,17 @@ class _LandingPageState extends State<LandingPage> {
               text: "Launch Portal Demo",
               onPressed: () => _scrollTo(_demoKey),
               isPrimary: true,
+            ),
+            const SizedBox(width: 16),
+            _HoverButton(
+              text: "Directory",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EmployeeDirectoryPage()),
+                );
+              },
+              isPrimary: false,
             ),
             const SizedBox(width: 16),
             _HoverButton(
@@ -637,11 +664,104 @@ class _PortalMockupState extends State<PortalMockup> {
   bool _isLoading = false;
   bool _isAttendanceLoading = false;
 
+  int _annualLeaveBalance = 10;
+int _sickLeaveBalance = 4;
+int _casualLeaveBalance = 2;
+int _pendingLeaveRequests = 0;
+
   String _errorMessage = '';
 
   Stream<QuerySnapshot>? _historyStream;
   Stream<QuerySnapshot>? _leavesStream;
   Stream<QuerySnapshot>? _tasksStream;
+
+ Future<void> _loadLeaveBalance(String uid) async {
+  try {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('leave_requests')
+        .where('userId', isEqualTo: uid)
+        .get();
+
+    const int totalAnnualLeave = 10;
+    const int totalSickLeave = 4;
+    const int totalCasualLeave = 2;
+
+    int usedAnnualLeave = 0;
+    int usedSickLeave = 0;
+    int usedCasualLeave = 0;
+    int pendingRequests = 0;
+
+    for (final document in snapshot.docs) {
+      final data = document.data();
+
+      final String status = (data['status'] ?? 'pending')
+          .toString()
+          .trim()
+          .toLowerCase();
+
+      final String leaveType = (data['leaveType'] ?? '')
+          .toString()
+          .trim()
+          .toLowerCase();
+
+      if (status == 'pending') {
+        pendingRequests++;
+      }
+
+      // Only approved requests reduce the leave balance.
+      if (status != 'approved') {
+        continue;
+      }
+
+      final startTimestamp = data['startDate'];
+      final endTimestamp = data['endDate'];
+
+      if (startTimestamp is! Timestamp ||
+          endTimestamp is! Timestamp) {
+        continue;
+      }
+
+      final DateTime startDate = startTimestamp.toDate();
+      final DateTime endDate = endTimestamp.toDate();
+
+      // +1 includes both the start date and end date.
+      final int leaveDays =
+          endDate.difference(startDate).inDays + 1;
+
+      if (leaveDays <= 0) {
+        continue;
+      }
+
+      if (leaveType == 'annual leave' ||
+          leaveType == 'annual') {
+        usedAnnualLeave += leaveDays;
+      } else if (leaveType == 'sick leave' ||
+          leaveType == 'sick') {
+        usedSickLeave += leaveDays;
+      } else if (leaveType == 'casual leave' ||
+          leaveType == 'casual') {
+        usedCasualLeave += leaveDays;
+      }
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _annualLeaveBalance =
+          (totalAnnualLeave - usedAnnualLeave).clamp(0, totalAnnualLeave);
+
+      _sickLeaveBalance =
+          (totalSickLeave - usedSickLeave).clamp(0, totalSickLeave);
+
+      _casualLeaveBalance =
+          (totalCasualLeave - usedCasualLeave).clamp(0, totalCasualLeave);
+
+      _pendingLeaveRequests = pendingRequests;
+    });
+  } catch (error) {
+    debugPrint('Leave balance loading error: $error');
+  }
+} 
 
   Future<void> _loadLeaveSummary(String uid) async {
     try {
@@ -772,6 +892,7 @@ class _PortalMockupState extends State<PortalMockup> {
 
       await _loadTodayAttendance();
       await _loadLeaveSummary(uid);
+      await _loadLeaveBalance(uid);
     } catch (e) {
       if (!mounted) return;
       setState(() {
