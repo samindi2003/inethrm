@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'landing_page.dart';
+import 'theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
+        scaffoldBackgroundColor: bgDark,
+        colorScheme: const ColorScheme.dark(
+          primary: primaryColor,
+          surface: bgCard,
+          secondary: accentColor,
+        ),
         useMaterial3: true,
       ),
       home: const LandingPage(),

@@ -9,19 +9,7 @@ import 'tasks_board_page.dart';
 import 'employee_directory_page.dart';
 import 'notifications_page.dart';
 
-// Styling Colors matching index.html variables
-const Color bgDark = Color(0xFF0F172A);
-const Color bgDarker = Color(0xFF090D16);
-const Color bgCard = Color(0xFF1E293B);
-const Color primaryColor = Color(0xFF6366F1);
-const Color primaryHover = Color(0xFF4F46E5);
-const Color accentColor = Color(0xFF06B6D4);
-const Color textMain = Color(0xFFF8FAFC);
-const Color textMuted = Color(0xFF94A3B8);
-const Color borderColor = Color(0xFF334155);
-const Color successColor = Color(0xFF10B981);
-const Color warningColor = Color(0xFFF59E0B);
-const Color dangerColor = Color(0xFFEF4444);
+import 'theme.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -270,7 +258,7 @@ class _LandingPageState extends State<LandingPage> {
                           style: GoogleFonts.outfit(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: bgDarker,
                           ),
                         ),
                       ),
@@ -370,7 +358,7 @@ class _LandingPageState extends State<LandingPage> {
         Container(
           constraints: const BoxConstraints(maxWidth: 500),
           child: Text(
-            "A full-featured HRM system designed with a secure Node.js backend, robust PostgreSQL database, and a smooth, modern React frontend interface.",
+            "A full-featured HRM system designed with a secure Firebase backend, real-time Firestore database, and a smooth, modern Flutter frontend interface.",
             textAlign: align,
             style: GoogleFonts.outfit(
               color: textMuted,
@@ -408,6 +396,27 @@ class _LandingPageState extends State<LandingPage> {
               isPrimary: false,
             ),
           ],
+        ),
+        const SizedBox(height: 48),
+        Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: primaryColor.withValues(alpha: 0.2),
+                blurRadius: 30,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              'assets/images/hr_landing_illustration.png',
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
       ],
     );
@@ -547,7 +556,7 @@ class _HoverButtonState extends State<_HoverButton> {
           child: Text(
             widget.text,
             style: GoogleFonts.outfit(
-              color: textMain,
+              color: widget.isPrimary ? bgDarker : textMain,
               fontWeight: FontWeight.w600,
               fontSize: 15,
             ),
@@ -1516,7 +1525,7 @@ int _pendingLeaveRequests = 0;
                       width: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        valueColor: AlwaysStoppedAnimation<Color>(bgDarker),
                       ),
                     )
                   : Text(
@@ -1524,7 +1533,7 @@ int _pendingLeaveRequests = 0;
                           ? "Create Developer Account"
                           : "Sign In as Developer",
                       style: GoogleFonts.outfit(
-                        color: textMain,
+                        color: bgDarker,
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
                       ),
@@ -1995,7 +2004,7 @@ int _pendingLeaveRequests = 0;
                       child: Text(
                         _isClockedIn ? "Clock Out" : "Clock In",
                         style: GoogleFonts.outfit(
-                          color: textMain,
+                          color: bgDarker,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -2277,7 +2286,7 @@ int _pendingLeaveRequests = 0;
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: isSelected ? primaryColor : bgDark,
+                      color: isSelected ? primaryColor.withValues(alpha: 0.15) : bgDark,
                       borderRadius: BorderRadius.circular(6),
                       border: Border.all(
                         color: isSelected ? primaryColor : borderColor,
@@ -2287,7 +2296,7 @@ int _pendingLeaveRequests = 0;
                     child: Text(
                       type,
                       style: GoogleFonts.outfit(
-                        color: textMain,
+                        color: isSelected ? primaryColor : textMain,
                         fontWeight: isSelected
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -2379,13 +2388,13 @@ int _pendingLeaveRequests = 0;
                       width: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(textMain),
+                        valueColor: AlwaysStoppedAnimation<Color>(bgDarker),
                       ),
                     )
                   : Text(
                       "Submit Leave Request",
                       style: GoogleFonts.outfit(
-                        color: textMain,
+                        color: bgDarker,
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
                       ),
@@ -3073,7 +3082,7 @@ int _pendingLeaveRequests = 0;
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
-                          foregroundColor: textMain,
+                          foregroundColor: bgDarker,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6),
                           ),

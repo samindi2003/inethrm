@@ -3,14 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-const Color bgDark = Color(0xFF0F172A);
-const Color bgCard = Color(0xFF1E293B);
-const Color primaryColor = Color(0xFF6366F1);
-const Color accentColor = Color(0xFF06B6D4);
-const Color textMain = Color(0xFFF8FAFC);
-const Color textMuted = Color(0xFF94A3B8);
-const Color borderColor = Color(0xFF334155);
-const Color dangerColor = Color(0xFFEF4444);
+import 'theme.dart';
 
 class EmployeeProfilePage extends StatefulWidget {
   const EmployeeProfilePage({super.key});
@@ -24,15 +17,19 @@ class _EmployeeProfilePageState extends State<EmployeeProfilePage> {
   String _errorMessage = '';
 
   String _name = 'Employee';
+  String _employeeId = 'Not assigned';
   String _email = '';
   String _role = 'Junior Developer';
   String _department = 'Engineering Department';
   String _phone = 'Not added';
+  String _emergencyContact = 'Not added';
   String _joiningDate = 'Not available';
   final TextEditingController _nameController = TextEditingController();
 final TextEditingController _phoneController = TextEditingController();
 final TextEditingController _roleController = TextEditingController();
 final TextEditingController _departmentController = TextEditingController();
+final TextEditingController _emergencyContactController = TextEditingController();
+final TextEditingController _employeeIdController = TextEditingController();
 
   @override
   void initState() {
@@ -92,11 +89,13 @@ final TextEditingController _departmentController =
 
       setState(() {
         _name = data['name'] ?? 'Employee';
+        _employeeId = data['employee_id'] ?? 'Not assigned';
         _email = data['email'] ?? user.email ?? '';
         _role = data['role'] ?? 'Junior Developer';
         _department =
             data['department'] ?? 'Engineering Department';
         _phone = data['phone'] ?? 'Not added';
+        _emergencyContact = data['emergency_contact'] ?? 'Not added';
         _joiningDate = joiningDate;
         _isLoading = false;
       });
@@ -109,10 +108,13 @@ final TextEditingController _departmentController =
   }
 Future<void> _showEditProfileDialog() async {
   _nameController.text = _name;
+  _employeeIdController.text = _employeeId == 'Not assigned' ? '' : _employeeId;
   _phoneController.text =
       _phone == 'Not added' ? '' : _phone;
   _roleController.text = _role;
   _departmentController.text = _department;
+  _emergencyContactController.text =
+      _emergencyContact == 'Not added' ? '' : _emergencyContact;
 
   await showDialog(
     context: context,
@@ -143,6 +145,12 @@ Future<void> _showEditProfileDialog() async {
                     ),
                     const SizedBox(height: 14),
                     _buildEditField(
+                      controller: _employeeIdController,
+                      label: 'Employee ID',
+                      icon: Icons.badge_outlined,
+                    ),
+                    const SizedBox(height: 14),
+                    _buildEditField(
                       controller: _phoneController,
                       label: 'Phone Number',
                       icon: Icons.phone_outlined,
@@ -158,6 +166,12 @@ Future<void> _showEditProfileDialog() async {
                       controller: _departmentController,
                       label: 'Department',
                       icon: Icons.business_outlined,
+                    ),
+                    const SizedBox(height: 14),
+                    _buildEditField(
+                      controller: _emergencyContactController,
+                      label: 'Emergency Contact',
+                      icon: Icons.contact_emergency_outlined,
                     ),
                   ],
                 ),
@@ -206,12 +220,16 @@ Future<void> _showEditProfileDialog() async {
                               .update({
                             'name':
                                 _nameController.text.trim(),
+                            'employee_id':
+                                _employeeIdController.text.trim(),
                             'phone':
                                 _phoneController.text.trim(),
                             'role':
                                 _roleController.text.trim(),
                             'department':
                                 _departmentController.text.trim(),
+                            'emergency_contact':
+                                _emergencyContactController.text.trim(),
                           });
 
                           if (!mounted) return;
@@ -219,6 +237,11 @@ Future<void> _showEditProfileDialog() async {
                           setState(() {
                             _name =
                                 _nameController.text.trim();
+                                
+                            _employeeId =
+                                _employeeIdController.text.trim().isEmpty
+                                    ? 'Not assigned'
+                                    : _employeeIdController.text.trim();
 
                             _phone =
                                 _phoneController.text.trim().isEmpty
@@ -230,6 +253,11 @@ Future<void> _showEditProfileDialog() async {
 
                             _department =
                                 _departmentController.text.trim();
+                                
+                            _emergencyContact =
+                                _emergencyContactController.text.trim().isEmpty
+                                    ? 'Not added'
+                                    : _emergencyContactController.text.trim();
                           });
 
                           Navigator.pop(dialogContext);
@@ -291,9 +319,11 @@ Future<void> _showEditProfileDialog() async {
 @override
 void dispose() {
   _nameController.dispose();
+  _employeeIdController.dispose();
   _phoneController.dispose();
   _roleController.dispose();
   _departmentController.dispose();
+  _emergencyContactController.dispose();
   super.dispose();
 }
   @override
@@ -379,6 +409,11 @@ void dispose() {
                           ),
                           const SizedBox(height: 24),
                           _buildProfileItem(
+                            icon: Icons.badge_outlined,
+                            title: 'Employee ID',
+                            value: _employeeId,
+                          ),
+                          _buildProfileItem(
                             icon: Icons.email_outlined,
                             title: 'Email Address',
                             value: _email,
@@ -397,6 +432,11 @@ void dispose() {
                             icon: Icons.phone_outlined,
                             title: 'Phone Number',
                             value: _phone,
+                          ),
+                          _buildProfileItem(
+                            icon: Icons.contact_emergency_outlined,
+                            title: 'Emergency Contact',
+                            value: _emergencyContact,
                           ),
                           _buildProfileItem(
                             icon: Icons.calendar_month_outlined,
@@ -418,7 +458,7 @@ void dispose() {
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
-                                foregroundColor: textMain,
+                                foregroundColor: bgDarker,
                                 shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.circular(8),

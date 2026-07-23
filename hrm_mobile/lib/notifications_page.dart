@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'theme.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -9,10 +10,10 @@ class NotificationsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifications', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: bgCard,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: bgDark,
       body: StreamBuilder<QuerySnapshot>(
         // Listen to the 'notifications' collection, ordered by newest first
         stream: FirebaseFirestore.instance
@@ -56,16 +57,17 @@ class NotificationsPage extends StatelessWidget {
               }
 
               return Card(
-                color: isRead ? const Color(0xFF1E293B) : const Color(0xFF2D3748), // Unread is slightly lighter
+                color: bgCard,
+                elevation: 4,
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  side: isRead ? BorderSide.none : const BorderSide(color: Color(0xFF6366F1), width: 1),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: isRead ? Colors.grey[700] : const Color(0xFF6366F1),
-                    child: const Icon(Icons.notifications, color: Colors.white, size: 20),
+                    backgroundColor: primaryColor.withValues(alpha: 0.1),
+                    child: Icon(
+                      Icons.notifications,
+                      color: isRead ? Colors.grey : primaryColor,
+                    ),
                   ),
                   title: Text(
                     title,

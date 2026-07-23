@@ -2,18 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Styling colors matching landing_page
-const Color bgDark = Color(0xFF0F172A);
-const Color bgDarker = Color(0xFF090D16);
-const Color bgCard = Color(0xFF1E293B);
-const Color primaryColor = Color(0xFF6366F1);
-const Color accentColor = Color(0xFF06B6D4);
-const Color textMain = Color(0xFFF8FAFC);
-const Color textMuted = Color(0xFF94A3B8);
-const Color borderColor = Color(0xFF334155);
-const Color successColor = Color(0xFF10B981);
-const Color warningColor = Color(0xFFF59E0B);
-const Color dangerColor = Color(0xFFEF4444);
+import 'theme.dart';
 
 class TasksBoardPage extends StatefulWidget {
   final String uid;
@@ -444,7 +433,7 @@ class _TasksBoardPageState extends State<TasksBoardPage> {
                               ElevatedButton.icon(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColor,
-                                  foregroundColor: textMain,
+                                  foregroundColor: bgDarker,
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(6),
